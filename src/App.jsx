@@ -17,12 +17,12 @@ import { getAssociatedTokenAddress, createTransferInstruction, TOKEN_PROGRAM_ID 
 import { useWallet, WalletProvider, ConnectionProvider } from '@solana/wallet-adapter-react';
 import { WalletModalProvider, WalletMultiButton } from '@solana/wallet-adapter-react-ui';
 
-// FIX: Corrected imports for individual wallet adapters.
-// These adapters are typically exported as default from their own dedicated packages,
-// not as named exports from the main '@solana/wallet-adapter-wallets' package.
-import { PhantomWalletAdapter } from '@solana/wallet-adapter-phantom';
-import { SolflareWalletAdapter } from '@solana/wallet-adapter-solflare';
-import { BackpackWalletAdapter } from '@solana/wallet-adapter-backpack';
+// FIX: Using recommended imports from @solana/wallet-adapter-wallets
+import {
+  getBackpackWallet, // Function to get Backpack wallet adapter
+  getPhantomWallet,   // Function to get Phantom wallet adapter
+  getSolflareWallet   // Function to get Solflare wallet adapter
+} from '@solana/wallet-adapter-wallets';
 
 
 // Default styles for wallet adapter UI
@@ -126,7 +126,7 @@ const TipModal = ({ isOpen, onClose, onTipConfirm, username }) => {
                     </button>
                     <button
                         onClick={handleConfirm}
-                        className="bg-green-500 text-white py-2 px-4 rounded-md hover:bg-green-600 transition-colors duration-200"
+                        className="bg-green-500 text-white px-4 py-2 rounded-md hover:bg-green-600 transition-colors duration-200"
                     >
                         Tip {amount} GOR
                     </button>
