@@ -17,7 +17,9 @@ import { getAssociatedTokenAddress, createTransferInstruction, TOKEN_PROGRAM_ID 
 import { useWallet, WalletProvider, ConnectionProvider } from '@solana/wallet-adapter-react';
 import { WalletModalProvider, WalletMultiButton } from '@solana/wallet-adapter-react-ui';
 
-// Corrected imports for individual wallet adapters
+// FIX: Corrected imports for individual wallet adapters.
+// These adapters are typically exported as default from their own dedicated packages,
+// not as named exports from the main '@solana/wallet-adapter-wallets' package.
 import { PhantomWalletAdapter } from '@solana/wallet-adapter-phantom';
 import { SolflareWalletAdapter } from '@solana/wallet-adapter-solflare';
 import { BackpackWalletAdapter } from '@solana/wallet-adapter-backpack';
