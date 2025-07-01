@@ -1,25 +1,50 @@
 import React, { useState, useEffect, createContext, useContext, useRef, useMemo, useCallback } from 'react';
 
-// Supabase Imports
+// Supabase Imports - IMPORTANT: This package MUST be installed in your local project:
+// npm install @supabase/supabase-js
+// or
+// yarn add @supabase/supabase-js
 import { createClient } from '@supabase/supabase-js';
 
-// Solana Imports
+// Solana Imports - IMPORTANT: These packages MUST be installed in your local project:
+// npm install @solana/web3.js @solana/spl-token @solana/wallet-adapter-react @solana/wallet-adapter-base @solana/wallet-adapter-react-ui
+// AND the individual wallet adapters:
+// npm install @solana/wallet-adapter-phantom @solana/wallet-adapter-solflare @solana/wallet-adapter-backpack
+// or
+// yarn add @solana/web3.js @solana/spl-token @solana/wallet-adapter-react @solana/wallet-adapter-base @solana/wallet-adapter-react-ui @solana/wallet-adapter-phantom @solana/wallet-adapter-solflare @solana/wallet-adapter-backpack
 import { Connection, PublicKey, Transaction, SystemProgram } from '@solana/web3.js';
 import { getAssociatedTokenAddress, createTransferInstruction, TOKEN_PROGRAM_ID } from '@solana/spl-token';
 import { useWallet, WalletProvider, ConnectionProvider } from '@solana/wallet-adapter-react';
 import { WalletModalProvider, WalletMultiButton } from '@solana/wallet-adapter-react-ui';
-import { PhantomWalletAdapter, SolflareWalletAdapter, BackpackWalletAdapter } from '@solana/wallet-adapter-wallets';
 
-// --- Supabase Configuration (Moved to App.jsx for direct use) ---
-const SUPABASE_URL = import.meta.env.VITE_SUPABASE_URL; // Access from .env
-const SUPABASE_ANON_KEY = import.meta.env.VITE_SUPABASE_ANON_KEY; // Access from .env
+// Corrected imports for individual wallet adapters
+import { PhantomWalletAdapter } from '@solana/wallet-adapter-phantom';
+import { SolflareWalletAdapter } from '@solana/wallet-adapter-solflare';
+import { BackpackWalletAdapter } from '@solana/wallet-adapter-backpack';
 
-const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
+// Default styles for wallet adapter UI
+// The 'require' statement for CSS styles is causing a compilation error in this environment.
+// Please ensure the necessary styles for the wallet adapter UI are included in your project's
+// global CSS (e.g., in your main App.css or index.css) or through other means.
+// For example, you might add a link tag in your public/index.html:
+// <link rel="stylesheet" href="https://unpkg.com/@solana/wallet-adapter-react-ui@latest/styles.css" />
+// Or import it in your main App.js/index.js if your bundler supports it:
+// import '@solana/wallet-adapter-react-ui/styles.css';
+// The 'require' syntax is not directly compatible with this online compiler's module resolution.
 
 // --- Solana Testnet Configuration ---
 const GORBAGANA_RPC_URL = "https://rpc.gorbagana.wtf";
 const GOR_TOKEN_MINT_ADDRESS = new PublicKey("3DtKNjWYz3nfrp4GSM7Zx5sH5kDCz24PhuzNg"); // Provided GOR Token Mint Address
+
+// --- Supabase Configuration (Moved to App.jsx for direct use) ---
+// Note: import.meta.env is a Vite-specific feature for accessing environment variables.
+// These lines are correct for a Vite project. The warnings you see are due to the online
+// compiler's limited environment not fully supporting Vite's features.
+const SUPABASE_URL = import.meta.env.VITE_SUPABASE_URL; // Access from .env
+const SUPABASE_ANON_KEY = import.meta.env.VITE_SUPABASE_ANON_KEY; // Access from .env
+
+const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
 
 // --- Supabase Context ---
@@ -136,14 +161,14 @@ const Post = ({ post, onLike, onComment, onRepost, onProfileClick, currentWallet
     };
 
     const handleTipConfirm = (amount) => {
-        onTipPost(post.author_address, amount);
+        onTipPost(post.author_address, amount); // Use author_address for Supabase
         setShowTipModal(false);
     };
 
     const isLiked = post.likes && post.likes.includes(currentWalletAddress);
     const likeButtonClass = isLiked ? 'text-red-500' : 'text-gray-500 hover:text-red-400';
 
-    const isAuthor = post.author_address === currentWalletAddress;
+    const isAuthor = post.author_address === currentWalletAddress; // Use author_address for Supabase
 
     return (
         <div className="bg-white p-4 rounded-lg shadow-md mb-4 border border-gray-200 animate-fade-in">
@@ -154,12 +179,12 @@ const Post = ({ post, onLike, onComment, onRepost, onProfileClick, currentWallet
             )}
             <div className="flex items-center mb-3">
                 <div className="w-10 h-10 bg-green-200 rounded-full flex items-center justify-center text-green-800 font-bold text-lg mr-3 cursor-pointer"
-                     onClick={() => onProfileClick(post.author_address)}>
+                     onClick={() => onProfileClick(post.author_address)}> {/* Use author_address */}
                     {post.username ? post.username[0].toUpperCase() : 'U'}
                 </div>
                 <div>
-                    <p className="font-semibold text-gray-800 cursor-pointer" onClick={() => onProfileClick(post.author_address)}>{post.username || 'Anonymous'}</p>
-                    <p className="text-sm text-gray-500">{new Date(post.created_at).toLocaleString()}</p>
+                    <p className="font-semibold text-gray-800 cursor-pointer" onClick={() => onProfileClick(post.author_address)}>{post.username || 'Anonymous'}</p> {/* Use author_address */}
+                    <p className="text-sm text-gray-500">{new Date(post.created_at).toLocaleString()}</p> {/* Use created_at */}
                 </div>
             </div>
             <p className="text-gray-700 mb-4">{post.content}</p>
@@ -177,7 +202,7 @@ const Post = ({ post, onLike, onComment, onRepost, onProfileClick, currentWallet
                     <svg className="w-5 h-5 fill-current" viewBox="0 0 24 24">
                         <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/>
                     </svg>
-                    <span>{post.likes_count || 0}</span>
+                    <span>{post.likes_count || 0}</span> {/* Use likes_count */}
                 </button>
                 <button
                     onClick={() => setShowComments(!showComments)}
@@ -187,7 +212,7 @@ const Post = ({ post, onLike, onComment, onRepost, onProfileClick, currentWallet
                     <svg className="w-5 h-5 fill-current" viewBox="0 0 24 24">
                         <path d="M20 2H4c-1.1 0-2 .9-2 2v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm0 14H6l-2 2V4h16v12z"/>
                     </svg>
-                    <span>{post.comments_count || 0}</span>
+                    <span>{post.comments_count || 0}</span> {/* Use comments_count */}
                 </button>
                 <button
                     onClick={() => onRepost(post.id)}
@@ -197,7 +222,7 @@ const Post = ({ post, onLike, onComment, onRepost, onProfileClick, currentWallet
                     <svg className="w-5 h-5 fill-current" viewBox="0 0 24 24">
                         <path d="M17 12l-4 4v-3H7V9h6V6l4 4zm-4 7H7V5h6v2h4V5c0-1.1-.9-2-2-2H7c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h10c1.1 0 2-.9 2-2v-4h-4v2z"/>
                     </svg>
-                    <span>{post.reposts_count || 0}</span>
+                    <span>{post.reposts_count || 0}</span> {/* Use reposts_count */}
                 </button>
                 {!isAuthor && currentWalletAddress && (
                     <button
@@ -220,7 +245,7 @@ const Post = ({ post, onLike, onComment, onRepost, onProfileClick, currentWallet
                             <div key={index} className="bg-gray-50 p-3 rounded-lg mb-2 text-sm border border-gray-100">
                                 <p className="font-semibold text-gray-800">{comment.username || 'Anonymous'}</p>
                                 <p className="text-gray-700">{comment.content}</p>
-                                <p className="text-xs text-gray-500">{new Date(comment.created_at).toLocaleString()}</p>
+                                <p className="text-xs text-gray-500">{new Date(comment.created_at).toLocaleString()}</p> {/* Use created_at */}
                             </div>
                         ))
                     ) : (
@@ -1188,6 +1213,7 @@ const App = () => {
             console.error("Error updating profile:", error);
             showMessage(`Failed to update profile: ${error.message}`, "error");
         }
+        
     };
 
     const filteredPosts = posts.filter(post =>
