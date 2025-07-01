@@ -1,0 +1,37 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Custom animations for messages */
+@keyframes fadeInOut {
+  0% { opacity: 0; transform: translateY(20px); }
+  10% { opacity: 1; transform: translateY(0); }
+  90% { opacity: 1; transform: translateY(0); }
+  100% { opacity: 0; transform: translateY(20px); }
+}
+
+.animate-fade-in-up {
+  animation: fadeInOut 3s ease-in-out forwards;
+}
+
+/* Animation for notification badge */
+@keyframes bounceFadeIn {
+  0% { transform: scale(0.5); opacity: 0; }
+  50% { transform: scale(1.2); opacity: 1; }
+  100% { transform: scale(1); opacity: 1; }
+}
+
+.animate-bounce-fade-in {
+  animation: bounceFadeIn 0.5s ease-out;
+}
+
+/* For wallet header notification ping */
+@keyframes ping-once {
+  0% { transform: scale(0.2); opacity: 0.8; }
+  80% { transform: scale(1.8); opacity: 0; }
+  100% { transform: scale(1.8); opacity: 0; }
+}
+
+.animate-ping-once {
+  animation: ping-once 1s cubic-bezier(0, 0, 0.2, 1) forwards;
+}
